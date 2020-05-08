@@ -11,13 +11,16 @@
         <div><input id="inputNumber" type="text" placeholder="请输入" /></div>
         <br />
         <div>
-            <input type="radio" name="bitType" value="16" /><span>十六进制</span>
-            <input type="radio" name="bitType" value="10" checked="checked" /><span>十进制</span>
-            <input type="radio" name="bitType" value="8" /><span>八进制</span>
-            <input type="radio" name="bitType" value="2" /><span>二进制</span>
+            <label><input type="radio" name="bitType" value="16" />十六进制</label>
+            <label><input type="radio" name="bitType" value="10" checked="checked" />十进制</label>
+            <label><input type="radio" name="bitType" value="8" />八进制</label>
+            <label><input type="radio" name="bitType" value="2" />二进制</label>
         </div>
         <br />
         <button onclick="Convert()">转换</button>
+        <br />
+        <br />
+        <br />
         <br />
         <div>
             <div><span></span></div>
@@ -38,11 +41,13 @@
 
         $.ajax({
             type: "post",
-            url: "/api/Convert/convert",
-            //contentType: "application/json",
+            url: "/api/Convert/convert",            
             data: { originalValue: val, bitType: typeValue },
             success: function (rdata) {
-                alert(rdata.bin + "," + rdata.oct + "," + rdata.dec + "," + rdata.hex);
+                $("#2R").text(rdata.bin);
+                $("#8R").text(rdata.oct);
+                $("#10R").text(rdata.dec);
+                $("#16R").text(rdata.hex);
             },
             dataType: "json"
         });

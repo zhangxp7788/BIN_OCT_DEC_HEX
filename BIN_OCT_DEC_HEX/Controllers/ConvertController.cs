@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BIN_OCT_DEC_HEX.Servers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,55 +17,39 @@ namespace BIN_OCT_DEC_HEX.Controllers
         {
 
             var originalValue = Request.Form["originalValue"];
-            var bitType = Request.Form["bitType"];
+            var bitType = Request.Form["bitType"].ToString();
 
-            var value = "01000111000";
+            IConvertServer server = null;
+
+            switch (bitType)
+            {
+                case "2":
+                    server = new BINServer();
+                    break;
+                case "8":
+                    server = new OCTServer();
+                    break;
+                case "10":
+                    server = new DECServer();
+                    break;
+                case "16":
+                    server = new HEXServer();
+                    break;
+                default:
+                    break;
+            }
 
             var res = new
             {
-                BIN = 000,
-                OCT = 1411,
-                DEC = await BIN2DEC(value),
-                HEX = "12ABC",
+                BIN = await server.ToBIN(originalValue),
+                OCT = await server.ToOCT(originalValue),
+                DEC = await server.ToDEC(originalValue),
+                HEX = await server.ToHEX(originalValue),
             };
 
             return Ok(res);
         }
 
-        private async Task<string> BIN2DEC(string originalValue)
-        {
-            if (!IsBIN(originalValue))
-                return await Task.FromResult("值无效");
-
-
-            var finalValue = 0;
-            char[] charArray = originalValue.ToCharArray();
-            for (int i = 0; i < charArray.Length; i++)
-            {
-                if (charArray[i] == 1)
-                {
-                    finalValue += 2 ^ i;
-                }
-            }
-
-            return await Task.FromResult(finalValue.ToString());
-        }
-
-        /// <summary>
-        /// 是否是二进制数
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private bool IsBIN(string value)
-        {
-            foreach (var s in value)
-            {
-                if (s == '0' || s == '1')
-                    continue;
-                return false;
-            }
-            return true;
-        }
 
     }
 }

@@ -48,6 +48,36 @@ namespace BIN_OCT_DEC_HEX.Servers
             return bitValue;
         }
 
+        protected override char IntToChar(int charVal)
+        {
+            char quotientStr;
+            switch (charVal)
+            {
+                case 10:
+                    quotientStr = 'A';
+                    break;
+                case 11:
+                    quotientStr = 'B';
+                    break;
+                case 12:
+                    quotientStr = 'C';
+                    break;
+                case 13:
+                    quotientStr = 'D';
+                    break;
+                case 14:
+                    quotientStr = 'E';
+                    break;
+                case 15:
+                    quotientStr = 'F';
+                    break;
+                default:
+                    quotientStr = char.Parse(charVal.ToString());
+                    break;
+            }
+            return quotientStr;
+        }
+
         protected override async Task<string> ToHEXDo(string originalValue)
         {
             return await Task.FromResult(originalValue);

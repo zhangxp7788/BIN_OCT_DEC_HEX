@@ -11,12 +11,6 @@ namespace BIN_OCT_DEC_HEX.Servers
 
         protected override int BitType => SystemConstant.OCTType;
 
-        protected override int CharToInt(char charVal)
-        {
-            return int.Parse(charVal.ToString());
-        }
-
-
         protected override async Task<string> ToOCTDo(string originalValue)
         {
             return await Task.FromResult(originalValue);

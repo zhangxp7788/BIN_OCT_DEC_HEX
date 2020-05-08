@@ -45,9 +45,11 @@ namespace BIN_OCT_DEC_HEX.Controllers
                 OCT = await server.ToOCT(originalValue),
                 DEC = await server.ToDEC(originalValue),
                 HEX = await server.ToHEX(originalValue),
-            };
+            };           
+
 
             return Ok(res);
+
         }
 
 

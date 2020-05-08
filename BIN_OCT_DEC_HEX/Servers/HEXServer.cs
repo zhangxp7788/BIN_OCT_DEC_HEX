@@ -7,9 +7,9 @@ namespace BIN_OCT_DEC_HEX.Servers
 {
     public class HEXServer : BaseServer
     {
-        protected override char[] charArray => "0123456789ABCDEFabcdef".ToCharArray();
+        protected override char[] charArray => SystemConstant.HEXCharArray.ToCharArray();
 
-        protected override int BitType => 16;
+        protected override int BitType => SystemConstant.HEXType;
 
         protected override int CharToInt(char charVal)
         {

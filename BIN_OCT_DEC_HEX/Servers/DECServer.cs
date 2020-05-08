@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,21 +9,18 @@ namespace BIN_OCT_DEC_HEX.Servers
 {
     public class DECServer : BaseConvertServer
     {
-        protected override char[] charArray => "0123456789".ToCharArray();
-        private const int BINType = 2;
-        private const int OCTType = 8;
-        private const int HEXType = 16;
+        protected override char[] charArray => SystemConstant.DECCharArray.ToCharArray();
 
         protected override async Task<string> ToBINDo(string originalValue)
         {
             Func<int, char> func = intVaule => char.Parse(intVaule.ToString());
-            return await ToConvert(originalValue, BINType, func);
+            return await ToConvert(originalValue, SystemConstant.BINType, func);
         }
 
         protected override async Task<string> ToOCTDo(string originalValue)
         {
             Func<int, char> func = intVaule => char.Parse(intVaule.ToString());
-            return await ToConvert(originalValue, OCTType, func);
+            return await ToConvert(originalValue, SystemConstant.OCTType, func);
         }
 
         protected override async Task<string> ToDECDo(string originalValue)
@@ -62,7 +60,7 @@ namespace BIN_OCT_DEC_HEX.Servers
                 }
                 return quotientStr;
             };
-            return await ToConvert(originalValue, HEXType, func);
+            return await ToConvert(originalValue, SystemConstant.HEXType, func);
         }
 
 
@@ -94,15 +92,6 @@ namespace BIN_OCT_DEC_HEX.Servers
                 }
             }
 
-            //var sb = new StringBuilder();
-            //for (int m = dic.Keys.Max(); m > -1; m--)
-            //{
-            //    if (dic.Keys.Contains(m))
-            //        sb.Append(dic[m]);
-            //    else
-            //        sb.Append('0');
-            //}
-
             return await Task.FromResult(container.ToString());
         }
 
@@ -110,38 +99,31 @@ namespace BIN_OCT_DEC_HEX.Servers
 
         class BitContainer
         {
-            private List<BitStruct> bitStructs = new List<BitStruct>();
-            public void Add(int bit, char charValue)
+            private Dictionary<int, char> dic = new Dictionary<int, char>();
+            internal void Add(int bit, char charValue)
             {
-                bitStructs.Add(new BitStruct(bit, charValue));
+                dic.Add(bit, charValue);
             }
 
             public override string ToString()
             {
                 var sb = new StringBuilder();
-                for (int i = bitStructs.Max(e => e.Bit); i > -1; i--)
+
+                for (int i = 0; i < dic.Keys.Max() + 1; i++)
                 {
-                    if (bitStructs.Any(e => e.Bit == i))
-                        sb.Append(bitStructs.First(e => e.Bit == i).Value);
+                    if (dic.Keys.Contains(i))
+                        sb.Append(dic[i]);
                     else
                         sb.Append('0');
+
+                    if ((i + 1) % 4 == 0)
+                        sb.Append(' ');
                 }
 
-                return sb.ToString();
-            }
-        }
-        struct BitStruct
-        {
-            public int Bit { get; }
-            public char Value { get; }
-
-            public BitStruct(int bit, char charValue)
-            {
-                Bit = bit;
-                Value = charValue;
+                var charArray = sb.ToString().ToCharArray().Reverse().ToArray();
+                return new string(charArray);
             }
         }
 
     }
-
 }

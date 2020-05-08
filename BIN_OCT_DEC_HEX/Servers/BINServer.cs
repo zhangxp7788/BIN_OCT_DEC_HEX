@@ -9,9 +9,9 @@ namespace BIN_OCT_DEC_HEX.Servers
     public class BINServer : BaseServer
     {
 
-        protected override char[] charArray => "01".ToCharArray();
+        protected override char[] charArray => SystemConstant.BINCharArray.ToCharArray();
 
-        protected override int BitType => 2;
+        protected override int BitType => SystemConstant.BINType;
 
         protected override int CharToInt(char charVal)
         {

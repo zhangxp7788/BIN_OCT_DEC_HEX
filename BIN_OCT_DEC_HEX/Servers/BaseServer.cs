@@ -8,7 +8,8 @@ namespace BIN_OCT_DEC_HEX.Servers
 {
 
     public abstract class BaseServer : BaseConvertServer
-    {
+    {   
+
         protected abstract int BitType { get; }
         protected virtual int CharToInt(char charVal)
         {
@@ -83,7 +84,7 @@ namespace BIN_OCT_DEC_HEX.Servers
             return char.Parse(charVal.ToString());
         }
 
-        char IntToChar(int charVal, EnumBitType enumBit)
+        private char IntToChar(int charVal, EnumBitType enumBit)
         {
             if (enumBit == EnumBitType.HEXType)
             {

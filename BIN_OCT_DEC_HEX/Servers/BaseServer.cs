@@ -6,28 +6,23 @@ using System.Threading.Tasks;
 
 namespace BIN_OCT_DEC_HEX.Servers
 {
-
-    public abstract class BaseServer : BaseConvertServer
-    {   
-
+    public abstract class BaseServer
+    {
+        protected abstract char[] CharArray { get; }
         protected abstract int BitType { get; }
         protected virtual int CharToInt(char charVal)
         {
             return int.Parse(charVal.ToString());
         }
+        protected virtual char IntToChar(int charVal)
+        {
+            return char.Parse(charVal.ToString());
+        }
 
-        protected override async Task<string> ToBINDo(string originalValue)
+        public virtual async Task<string> Self2DEC(string originalValue)
         {
-            var decVal = await ToDECDo(originalValue);
-            return await DEC2Other(decVal, EnumBitType.BINType);
-        }
-        protected override async Task<string> ToOCTDo(string originalValue)
-        {
-            var decVal = await ToDECDo(originalValue);
-            return await DEC2Other(decVal, EnumBitType.OCTType);
-        }
-        protected override async Task<string> ToDECDo(string originalValue)
-        {
+            if (IsValid(originalValue, CharArray) == false) return "值无效";
+
             var finalValue = 0;
             var charArray = originalValue.ToCharArray().Reverse().ToArray();
             for (int i = 0; i < charArray.Length; i++)
@@ -41,32 +36,28 @@ namespace BIN_OCT_DEC_HEX.Servers
 
             return await Task.FromResult(finalValue.ToString());
         }
-        protected override async Task<string> ToHEXDo(string originalValue)
-        {
-            var decVal = await ToDECDo(originalValue);
-            return await DEC2Other(decVal, EnumBitType.HEXType);
-        }
 
-        protected async Task<string> DEC2Other(string originalValue, EnumBitType enumBit)
+        public virtual async Task<string> DEC2Self(string originalValue)
         {
+            if (IsValid(originalValue, SystemConstant.DECCharArray.ToCharArray()) == false) return "值无效";
+
             var container = new BitContainer();
             var parseVal = int.Parse(originalValue);
-            var bitType = (byte)enumBit;
 
             //int32类型的整数,所以最大32位
-            Recursion(parseVal, 32);
+            Recursion(parseVal, 64);
 
             void Recursion(int val, int maxI)
             {
                 for (int i = 0; i < maxI; i++)
                 {
                     //除数
-                    var divisor = (int)Math.Pow(bitType, i);
+                    var divisor = (int)Math.Pow(BitType, i);
                     //求商
                     var quotient = val / divisor;
-                    if (quotient < bitType)
+                    if (quotient < BitType)
                     {
-                        char quotientStr = IntToChar(quotient, enumBit);
+                        char quotientStr = IntToChar(quotient);
                         container.Add(i, quotientStr);
                         //取模
                         var modulus = val % divisor;
@@ -77,22 +68,6 @@ namespace BIN_OCT_DEC_HEX.Servers
             }
 
             return await Task.FromResult(container.ToString());
-        }
-
-        protected virtual char IntToChar(int charVal)
-        {
-            return char.Parse(charVal.ToString());
-        }
-
-        private char IntToChar(int charVal, EnumBitType enumBit)
-        {
-            if (enumBit == EnumBitType.HEXType)
-            {
-                // 这里要想办法优化
-                return new HEXServer().IntToChar(charVal);
-            }
-
-            return IntToChar(charVal);
         }
 
         class BitContainer
@@ -123,5 +98,18 @@ namespace BIN_OCT_DEC_HEX.Servers
             }
         }
 
-    }    
+        /// <summary>
+        /// 判断值是否有效
+        /// </summary>
+        private bool IsValid(string val, char[] charArray)
+        {
+            foreach (var s in val)
+            {
+                if (charArray.Any(e => e == s))
+                    continue;
+                return false;
+            }
+            return true;
+        }
+    }
 }

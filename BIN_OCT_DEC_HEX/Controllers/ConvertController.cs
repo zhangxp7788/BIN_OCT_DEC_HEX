@@ -18,12 +18,13 @@ namespace BIN_OCT_DEC_HEX.Controllers
 
             var originalValue = Request.Form["originalValue"];
             var bitType = Request.Form["bitType"].ToString();
+            
 
-            IConvertServer server = null;
+            BaseServer server = null;
 
             switch (bitType)
             {
-                case "2":
+                case "2" :
                     server = new BINServer();
                     break;
                 case "8":
@@ -39,19 +40,19 @@ namespace BIN_OCT_DEC_HEX.Controllers
                     break;
             }
 
-            var res = new
+            var decVaule = await server.Self2DEC(originalValue);
+
+            var data = new
             {
-                BIN = await server.ToBIN(originalValue),
-                OCT = await server.ToOCT(originalValue),
-                DEC = await server.ToDEC(originalValue),
-                HEX = await server.ToHEX(originalValue),
-            };           
+                Bin = await new BINServer().DEC2Self(decVaule),
+                OCT = await new OCTServer().DEC2Self(decVaule),
+                DEC = await new DECServer().DEC2Self(decVaule),
+                HEX = await new HEXServer().DEC2Self(decVaule),
+            };
 
-
-            return Ok(res);
+            return Ok(data);
 
         }
-
 
     }
 }

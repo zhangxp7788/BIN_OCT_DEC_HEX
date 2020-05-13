@@ -7,7 +7,7 @@ namespace BIN_OCT_DEC_HEX.Servers
 {
     public class HEXServer : BaseServer
     {
-        protected override char[] charArray => SystemConstant.HEXCharArray.ToCharArray();
+        protected override char[] CharArray => SystemConstant.HEXCharArray.ToCharArray();
 
         protected override int BitType => SystemConstant.HEXType;
 
@@ -76,11 +76,6 @@ namespace BIN_OCT_DEC_HEX.Servers
                     break;
             }
             return quotientStr;
-        }
-
-        protected override async Task<string> ToHEXDo(string originalValue)
-        {
-            return await Task.FromResult(originalValue);
         }
 
     }
